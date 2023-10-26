@@ -53,8 +53,6 @@ class PessoaController {
     }
   }
 
-  //http://localhost:3000/pessoas/1/matricula/5
-  //http://localhost:3000/pessoas/:estudanteID/matricula/:matriculaID
   static async pegoUmaMatricula(req, res) {
     const { estudanteId, matriculaId } = req.params
     try {
@@ -73,6 +71,30 @@ class PessoaController {
     try {
       const novaMatriculaCriada = await database.Matriculas.create(novaMatricula)
       return res.status(200).json(novaMatriculaCriada);
+    } catch (error) {
+      return res.status(500).json(error.message);
+    }
+  }
+
+  static async atualizaMatricula(req, res) {
+    const { estudanteId, matriculaId } = req.params
+    const novasInfos = req.body
+    try {
+      await database.Matriculas.update(novasInfos, { where: 
+        { id: Number(matriculaId),
+         estudante_id: Number(estudanteId)} })
+      const MatriculaAtualizada = await database.Matriculas.findOne({ where: { id: Number(matriculaId) } })
+      return res.status(200).json(MatriculaAtualizada);
+    } catch (error) {
+      return res.status(500).json(error.message);
+    }
+  }
+
+  static async apagarMatricula(req, res) {
+    const { estudanteId, matriculaId } = req.params
+    try {
+      await database.Matriculas.destroy({ where: { id: Number(matriculaId) } })
+      return res.status(200).json({ mensagem: `Id ${matriculaId} deletado com sucesso!` })
     } catch (error) {
       return res.status(500).json(error.message);
     }
