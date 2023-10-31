@@ -56,9 +56,13 @@ class PessoaController {
   static async pegoUmaMatricula(req, res) {
     const { estudanteId, matriculaId } = req.params
     try {
-      const umaMatricula = await database.Matriculas.findOne({ where:
-         { id: Number(matriculaId), 
-          estudante_id: Number(estudanteId) } })
+      const umaMatricula = await database.Matriculas.findOne({
+        where:
+        {
+          id: Number(matriculaId),
+          estudante_id: Number(estudanteId)
+        }
+      })
       return res.status(200).json(umaMatricula);
     } catch (error) {
       return res.status(500).json(error.message);
@@ -67,7 +71,7 @@ class PessoaController {
 
   static async criaMatricula(req, res) {
     const { estudanteId } = req.params
-    const novaMatricula = {...req.body, estudante_id: Number(estudanteId)}
+    const novaMatricula = { ...req.body, estudante_id: Number(estudanteId) }
     try {
       const novaMatriculaCriada = await database.Matriculas.create(novaMatricula)
       return res.status(200).json(novaMatriculaCriada);
@@ -80,15 +84,30 @@ class PessoaController {
     const { estudanteId, matriculaId } = req.params
     const novasInfos = req.body
     try {
-      await database.Matriculas.update(novasInfos, { where: 
-        { id: Number(matriculaId),
-         estudante_id: Number(estudanteId)} })
+      await database.Matriculas.update(novasInfos, {
+        where:
+        {
+          id: Number(matriculaId),
+          estudante_id: Number(estudanteId)
+        }
+      })
       const MatriculaAtualizada = await database.Matriculas.findOne({ where: { id: Number(matriculaId) } })
       return res.status(200).json(MatriculaAtualizada);
     } catch (error) {
       return res.status(500).json(error.message);
     }
   }
+
+  static async restauraPessoa(req, res) {
+    const { id } = req.params
+    try {
+      await database.Pessoas.restore({ where: { id: Number(id) } })
+      return res.status(200).json({mensagem: `id${id} restaurado`})
+    } catch (error) {
+      return res.status(500).json(error.message);
+    }
+  }
+
 
   static async apagarMatricula(req, res) {
     const { estudanteId, matriculaId } = req.params
