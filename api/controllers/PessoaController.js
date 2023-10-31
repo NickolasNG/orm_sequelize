@@ -1,9 +1,18 @@
 const database = require('../models');
 
 class PessoaController {
-  static async pegaTodasAsPessoas(req, res) {
+  static async pegaPessoasAtivas(req, res) {
     try {
-      const TodasAsPessoas = await database.Pessoas.findAll()
+      const pessoasAtivas = await database.Pessoas.findAll()
+      return res.status(200).json(pessoasAtivas);
+    } catch (error) {
+      return res.status(500).json(error.message);
+    }
+  }
+
+    static async pegaTodasAsPessoas(req, res) {
+    try {
+      const TodasAsPessoas = await database.Pessoas.scope('todos').findAll()
       return res.status(200).json(TodasAsPessoas);
     } catch (error) {
       return res.status(500).json(error.message);
@@ -108,6 +117,19 @@ class PessoaController {
     }
   }
 
+  static async restauraMatricula(req, res) {
+    const {estudanteId, matriculaId} = req.paramstry
+    try{
+      await database.Matriculas.restore({
+        where: {id: Number(matriculaId), estudante_Id: Number (estudanteId)}
+      })
+    return res.status(200).json({ mensagem: `id ${id} restaurado`})
+    }catch(error){
+    return res.status(500).json(error.message);
+    }
+  }
+    
+
 
   static async apagarMatricula(req, res) {
     const { estudanteId, matriculaId } = req.params
@@ -118,7 +140,6 @@ class PessoaController {
       return res.status(500).json(error.message);
     }
   }
-
 }
 
 module.exports = PessoaController;
