@@ -8,7 +8,7 @@ class TurmaController {
     const { data_inicial, data_final } = req.query
     const where = {}
     data_inicial || data_final ? where.data_inicio = {} : null
-    data_inicial ? where.data_inicio[Op.gte] = data_inicial : null 
+    data_inicial ? where.data_inicio[Op.gte] = data_inicial : null
     data_final ? where.data_inicio[Op.lte] = data_final : null
     try {
       const todasAsTurmas = await database.Turmas.findAll({ where })
@@ -18,14 +18,14 @@ class TurmaController {
     }
   }
 
-/*{
-  where: {
-    data_inicio: {
-      [Op.gte]: data,
-      [Op.lte]: data
+  /*{
+    where: {
+      data_inicio: {
+        [Op.gte]: data,
+        [Op.lte]: data
+      }
     }
-  }
-}*/
+  }*/
 
   static async pegaUmaTurma(req, res) {
     const { id } = req.params
